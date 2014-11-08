@@ -4,17 +4,19 @@ require "parallel"
 module Paraknife
   class Cli
     BACKENDS = %w(solo zero)
+    SUBCOMMANDS = %w(bootstrap clean cook prepare)
 
     def self.run(argv)
       new(argv).run
     end
 
     def initialize(argv)
-      @backend, @nodes, @knife_options = parse_argv(argv)
+      @backend, @subcommand, @nodes, @knife_options = parse_argv(argv)
     end
 
     def run
       puts "backend: #{@backend}"
+      puts "subcommand: #{@subcommand}"
       puts "nodes:"
       @nodes.each do |node|
         puts "\t#{node}"
@@ -22,7 +24,7 @@ module Paraknife
       puts "knife options: #{@knife_options.join(" ")}"
 
       Parallel.each(@nodes, in_threads: @nodes.count) do |node|
-        command = ["knife", @backend, "prepare", node, @knife_options, "2>&1"].flatten.compact.join(" ")
+        command = ["knife", @backend, @subcommand, node, @knife_options, "2>&1"].flatten.compact.join(" ")
         puts "[#{node}] #{command}"
         IO.popen(command) do |io|
           io.each do |line|
@@ -38,6 +40,9 @@ module Paraknife
         backend = argv.shift # solo or zero
         abort "Invalid backend: `#{backend}`" unless BACKENDS.include?(backend)
 
+        subcommand = argv.shift
+        abort "Invalid subcommand: `#{subcommand}`" unless SUBCOMMANDS.include?(subcommand)
+
         nodes = []
         knife_options = []
         knife_options_section = false
@@ -51,7 +56,7 @@ module Paraknife
           end
         end
 
-        [backend, nodes, knife_options]
+        [backend, subcommand, nodes, knife_options]
       end
   end
 end
