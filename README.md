@@ -1,9 +1,13 @@
 # Paraknife
 
-Run knife-solo (or knife-zero) in parallel.
+Run knife-solo in parallel.
 
     $ paraknife [<options>] <backend> <subcommand> <nodes> [<knife_options>]
 
+## Requirements
+
+- Ruby >= 2.1
+- [knife-solo](http://rubygems.org/gems/knife-solo) (or [knife-zero](http://rubygems.org/gems/knife-zero))
 
 ## Installation
 
@@ -26,6 +30,10 @@ You can run `knife solo cook` in parallel like:
     $ paraknife solo cook node1 node2 node3 node4
 
 By default, it runs `bundle exec knife solo cook node1` and so on in two threads.
+
+paraknife may work with knife-zero like below, but isn't well tested yet:
+
+    $ paraknife zero cook node1 node2
 
 ### Knife's original options
 
