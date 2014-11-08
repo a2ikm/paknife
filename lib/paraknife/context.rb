@@ -1,5 +1,6 @@
 require "logger"
 require "open3"
+require "term/ansicolor"
 
 module Paraknife
   class Context
@@ -50,8 +51,11 @@ module Paraknife
     private
 
       def setup_logger
+        color = rand(0..255)
+        colored_node = Term::ANSIColor.color(color, node)
+
         @logger = Logger.new(STDOUT)
-        @logger.formatter = proc { |severity, datetime, progname, msg| "[#{node}] #{msg.chomp}\n" }
+        @logger.formatter = proc { |severity, datetime, progname, msg| "[#{colored_node}] #{msg.chomp}\n" }
       end
   end
 end
