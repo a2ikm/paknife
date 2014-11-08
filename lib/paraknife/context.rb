@@ -1,18 +1,21 @@
+require "logger"
 require "open3"
 
 module Paraknife
   class Context
-    attr_reader :backend, :subcommand, :node, :options
+    attr_reader :logger, :backend, :subcommand, :node, :options
 
     def initialize(backend, subcommand, node, options)
       @backend = backend
       @subcommand = subcommand
       @node = node
       @options = options
+
+      setup_logger
     end
 
     def run
-      puts "[#{node}] #{command}"
+      logger.info command
       Open3.popen3(command) do |stdin, stdout, stderr, wait_thr|
         begin
           loop do
@@ -21,9 +24,9 @@ module Paraknife
                 next if line.nil? || line.empty?
 
                 if io == stdout
-                  puts "[#{node}] #{line}"
+                  logger.info line
                 elsif io == stderr
-                  puts "[#{node}] Error! #{line}"
+                  logger.warn line
                 end
               end
             end
@@ -43,5 +46,12 @@ module Paraknife
         options,
       ].flatten.compact.join(" ")
     end
+
+    private
+
+      def setup_logger
+        @logger = Logger.new(STDOUT)
+        @logger.formatter = proc { |severity, datetime, progname, msg| "[#{node}] #{msg.chomp}\n" }
+      end
   end
 end
