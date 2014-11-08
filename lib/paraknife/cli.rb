@@ -9,6 +9,7 @@ module Paraknife
 
     DEFAULT_OPTIONS = {
       threads: 2,
+      quiet: false,
     }
 
     def self.run(argv)
@@ -40,6 +41,10 @@ module Paraknife
         OptionParser.new do |op|
           op.banner = "Usage: #{op.program_name} [<options>] <backend> <subcommand> <nodes> [<knife_options>]"
           op.version = VERSION
+
+          op.on("-q", "--[no-]quiet") do |v|
+            opts[:quiet] = v
+          end
 
           op.on("-t", "--threads VALUE") do |v|
             if v == "max"
@@ -89,8 +94,12 @@ module Paraknife
       end
 
       def build_contexts(backend, subcommand, nodes, knife_options)
+        opts = {
+          log_level: determine_log_level,
+        }
+
         nodes.map do |node|
-          Context.new(backend, subcommand, node, knife_options)
+          Context.new(backend, subcommand, node, knife_options, opts)
         end
       end
 
@@ -99,6 +108,14 @@ module Paraknife
           @contexts.count
         else
           [@contexts.count, @options[:threads]].min
+        end
+      end
+
+      def determine_log_level
+        if @options[:quiet]
+          :warn
+        else
+          :info
         end
       end
   end

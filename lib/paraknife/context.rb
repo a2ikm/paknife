@@ -6,11 +6,12 @@ module Paraknife
   class Context
     attr_reader :logger, :backend, :subcommand, :node, :knife_options
 
-    def initialize(backend, subcommand, node, knife_options)
+    def initialize(backend, subcommand, node, knife_options, options = {})
       @backend = backend
       @subcommand = subcommand
       @node = node
       @knife_options = knife_options
+      @options = options
 
       setup_logger
     end
@@ -56,6 +57,12 @@ module Paraknife
 
         @logger = Logger.new(STDOUT)
         @logger.formatter = proc { |severity, datetime, progname, msg| "[#{colored_node}] #{msg.chomp}\n" }
+        @logger.level =
+          if @options[:log_level]
+            Logger.const_get(@options[:log_level].upcase)
+          else
+            Logger::INFO
+          end
       end
   end
 end
