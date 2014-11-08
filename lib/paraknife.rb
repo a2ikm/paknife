@@ -1,5 +1,5 @@
 require "paraknife/version"
+require "paraknife/cli"
 
 module Paraknife
-  # Your code goes here...
 end

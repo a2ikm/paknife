@@ -2,4 +2,4 @@
 
 require "paraknife"
 
-puts "Hello, this is paraknife!"
+Paraknife::Cli.run(ARGV)
