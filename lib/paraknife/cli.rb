@@ -1,3 +1,4 @@
+require "open3"
 require "optparse"
 require "parallel"
 require "paraknife/context"
@@ -20,9 +21,23 @@ module Paraknife
         node = context.node
         command = context.command
         puts "[#{node}] #{command}"
-        IO.popen(command) do |io|
-          io.each do |line|
-            puts "[#{node}] #{line}"
+        Open3.popen3(command) do |stdin, stdout, stderr, wait_thr|
+          begin
+            loop do
+              IO.select([stdout, stderr]).flatten.compact.each do |io|
+                io.each do |line|
+                  next if line.nil? || line.empty?
+
+                  if io == stdout
+                    puts "[#{node}] #{line}"
+                  elsif io == stderr
+                    puts "[#{node}] Error! #{line}"
+                  end
+                end
+              end
+              break if stdout.closed? && stderr.closed?
+            end
+          rescue EOFError
           end
         end
       end

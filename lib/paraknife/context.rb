@@ -16,7 +16,6 @@ module Paraknife
         subcommand,
         node,
         options,
-        "2>&1",
       ].flatten.compact.join(" ")
     end
   end
