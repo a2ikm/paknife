@@ -8,9 +8,9 @@ Gem::Specification.new do |spec|
   spec.version       = Paraknife::VERSION
   spec.authors       = ["Masato Ikeda"]
   spec.email         = ["masato.ikeda@gmail.com"]
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
-  spec.homepage      = ""
+  spec.summary       = %q{Run knife-solo (or knife-zero) in parallel}
+  spec.description   = %q{Run knife-solo (or knife-zero) in parallel}
+  spec.homepage      = "https://github.com/a2ikm/paraknife"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
