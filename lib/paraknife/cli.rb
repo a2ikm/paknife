@@ -98,8 +98,8 @@ module Paraknife
           log_level: determine_log_level,
         }
 
-        nodes.map do |node|
-          Context.new(backend, subcommand, node, knife_options, opts)
+        nodes.map.with_index do |node, index|
+          Context.new(index, backend, subcommand, node, knife_options, opts)
         end
       end
 

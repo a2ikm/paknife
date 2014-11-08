@@ -4,9 +4,10 @@ require "term/ansicolor"
 
 module Paraknife
   class Context
-    attr_reader :logger, :backend, :subcommand, :node, :knife_options
+    attr_reader :logger, :index, :backend, :subcommand, :node, :knife_options
 
-    def initialize(backend, subcommand, node, knife_options, options = {})
+    def initialize(index, backend, subcommand, node, knife_options, options = {})
+      @index = index
       @backend = backend
       @subcommand = subcommand
       @node = node
@@ -51,8 +52,10 @@ module Paraknife
 
     private
 
+      COLOR_CODES = (1..15).to_a
+
       def setup_logger
-        color = rand(0..255)
+        color = COLOR_CODES[index % COLOR_CODES.length]
         colored_node = Term::ANSIColor.color(color, node)
 
         @logger = Logger.new(STDOUT)
