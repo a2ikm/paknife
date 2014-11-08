@@ -8,11 +8,12 @@ module Paraknife
     SUBCOMMANDS = %w(bootstrap clean cook prepare)
 
     DEFAULT_KNIFE = "bundle exec knife"
+    DEFAULT_THREADS = 2
 
     DEFAULT_OPTIONS = {
       knife: nil,
       quiet: false,
-      threads: 2,
+      threads: nil,
     }
 
     def self.run(argv)
@@ -116,10 +117,12 @@ module Paraknife
       end
 
       def determine_threads
-        if @options[:threads] == :max
+        threads = @options[:threads] || ENV["PARAKNIFE_THREADS"] || DEFAULT_THREADS
+
+        if threads.to_s.downcase == "max"
           @contexts.count
         else
-          [@contexts.count, @options[:threads]].min
+          [@contexts.count, threads.to_i].min
         end
       end
 
