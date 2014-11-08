@@ -7,6 +7,10 @@ module Paraknife
     BACKENDS = %w(solo zero)
     SUBCOMMANDS = %w(bootstrap clean cook prepare)
 
+    DEFAULT_OPTIONS = {
+      threads: 2,
+    }
+
     def self.run(argv)
       new(argv).run
     end
@@ -14,12 +18,12 @@ module Paraknife
     attr_reader :contexts
 
     def initialize(argv)
-      backend, subcommand, nodes, knife_options = parse_argv(argv)
+      @options, backend, subcommand, nodes, knife_options = parse_argv(argv)
       @contexts = build_contexts(backend, subcommand, nodes, knife_options)
     end
 
     def run
-      Parallel.each(contexts, in_threads: contexts.count) do |context|
+      Parallel.each(contexts, in_threads: determine_threads) do |context|
         context.run
       end
     end
@@ -27,6 +31,27 @@ module Paraknife
     private
 
       def parse_argv(argv)
+        [parse_options(argv), *parse_knife_argv(argv)]
+      end
+
+      def parse_options(argv)
+        opts = {}
+        OptionParser.new do |op|
+          op.on("-t", "--threads VALUE") do |v|
+            if v == "max"
+              opts[:threads] = :max
+            elsif v.to_i > 0
+              opts[:threads] = v.to_i
+            else
+              abort "Invalid value for `--thread` option: #{v}"
+            end
+          end
+        end.order!
+
+        DEFAULT_OPTIONS.merge(opts)
+      end
+
+      def parse_knife_argv(argv)
         backend = argv.shift # solo or zero
         abort "Invalid backend: `#{backend}`" unless BACKENDS.include?(backend)
 
@@ -52,6 +77,14 @@ module Paraknife
       def build_contexts(backend, subcommand, nodes, knife_options)
         nodes.map do |node|
           Context.new(backend, subcommand, node, knife_options)
+        end
+      end
+
+      def determine_threads
+        if @options[:threads] == :max
+          @contexts.count
+        else
+          [@contexts.count, @options[:threads]].min
         end
       end
   end
