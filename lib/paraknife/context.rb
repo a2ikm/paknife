@@ -4,13 +4,13 @@ require "term/ansicolor"
 
 module Paraknife
   class Context
-    attr_reader :logger, :backend, :subcommand, :node, :options
+    attr_reader :logger, :backend, :subcommand, :node, :knife_options
 
-    def initialize(backend, subcommand, node, options)
+    def initialize(backend, subcommand, node, knife_options)
       @backend = backend
       @subcommand = subcommand
       @node = node
-      @options = options
+      @knife_options = knife_options
 
       setup_logger
     end
@@ -44,7 +44,7 @@ module Paraknife
         backend,
         subcommand,
         node,
-        options,
+        knife_options,
       ].flatten.compact.join(" ")
     end
 
