@@ -42,7 +42,7 @@ module Paraknife
 
     def command
       [
-        "knife",
+        @options[:knife],
         backend,
         subcommand,
         node,

@@ -7,9 +7,12 @@ module Paraknife
     BACKENDS = %w(solo zero)
     SUBCOMMANDS = %w(bootstrap clean cook prepare)
 
+    DEFAULT_KNIFE = "bundle exec knife"
+
     DEFAULT_OPTIONS = {
-      threads: 2,
+      knife: nil,
       quiet: false,
+      threads: 2,
     }
 
     def self.run(argv)
@@ -41,6 +44,10 @@ module Paraknife
         OptionParser.new do |op|
           op.banner = "Usage: #{op.program_name} [<options>] <backend> <subcommand> <nodes> [<knife_options>]"
           op.version = VERSION
+
+          op.on("-k", "--knife VALUE") do |v|
+            opts[:knife] = v
+          end
 
           op.on("-q", "--[no-]quiet") do |v|
             opts[:quiet] = v
@@ -96,11 +103,16 @@ module Paraknife
       def build_contexts(backend, subcommand, nodes, knife_options)
         opts = {
           log_level: determine_log_level,
+          knife: determine_knife,
         }
 
         nodes.map.with_index do |node, index|
           Context.new(index, backend, subcommand, node, knife_options, opts)
         end
+      end
+
+      def determine_knife
+        @options[:knife] || ENV["PARAKNIFE_KNIFE"] || DEFAULT_KNIFE
       end
 
       def determine_threads
