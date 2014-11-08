@@ -14,7 +14,8 @@ module Paraknife
     attr_reader :contexts
 
     def initialize(argv)
-      parse_argv(argv)
+      backend, subcommand, nodes, knife_options = parse_argv(argv)
+      @contexts = build_contexts(backend, subcommand, nodes, knife_options)
     end
 
     def run
@@ -45,7 +46,11 @@ module Paraknife
           end
         end
 
-        @contexts = nodes.map do |node|
+        [backend, subcommand, nodes, knife_options]
+      end
+
+      def build_contexts(backend, subcommand, nodes, knife_options)
+        nodes.map do |node|
           Context.new(backend, subcommand, node, knife_options)
         end
       end
