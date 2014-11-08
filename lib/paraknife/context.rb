@@ -20,6 +20,8 @@ module Paraknife
     def run
       logger.info command
       Open3.popen3(command) do |stdin, stdout, stderr, wait_thr|
+        stdin.close_write
+
         begin
           loop do
             IO.select([stdout, stderr]).flatten.compact.each do |io|
