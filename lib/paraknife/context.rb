@@ -35,7 +35,7 @@ module Paraknife
                 end
               end
             end
-            break if stdout.closed? && stderr.closed?
+            break if stdout.eof? && stderr.eof?
           end
         rescue EOFError
         end
