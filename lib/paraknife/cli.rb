@@ -1,5 +1,6 @@
 require "optparse"
 require "parallel"
+require "paraknife/context"
 
 module Paraknife
   class Cli
@@ -11,20 +12,13 @@ module Paraknife
     end
 
     def initialize(argv)
-      @backend, @subcommand, @nodes, @knife_options = parse_argv(argv)
+      @contexts = parse_argv(argv)
     end
 
     def run
-      puts "backend: #{@backend}"
-      puts "subcommand: #{@subcommand}"
-      puts "nodes:"
-      @nodes.each do |node|
-        puts "\t#{node}"
-      end
-      puts "knife options: #{@knife_options.join(" ")}"
-
-      Parallel.each(@nodes, in_threads: @nodes.count) do |node|
-        command = ["knife", @backend, @subcommand, node, @knife_options, "2>&1"].flatten.compact.join(" ")
+      Parallel.each(@contexts, in_threads: @contexts.count) do |context|
+        node = context.node
+        command = context.command
         puts "[#{node}] #{command}"
         IO.popen(command) do |io|
           io.each do |line|
@@ -56,7 +50,9 @@ module Paraknife
           end
         end
 
-        [backend, subcommand, nodes, knife_options]
+        nodes.map do |node|
+          Context.new(backend, subcommand, node, knife_options)
+        end
       end
   end
 end
