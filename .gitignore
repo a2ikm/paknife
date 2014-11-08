@@ -8,6 +8,7 @@
 /spec/reports/
 /tmp/
 /sample/.vagrant
+/sample/Gemfile.lock
 *.bundle
 *.so
 *.o
