@@ -36,7 +36,11 @@ module Paraknife
 
       def parse_options(argv)
         opts = {}
+
         OptionParser.new do |op|
+          op.banner = "Usage: #{op.program_name} [<options>] <backend> <subcommand> <nodes> [<knife_options>]"
+          op.version = VERSION
+
           op.on("-t", "--threads VALUE") do |v|
             if v == "max"
               opts[:threads] = :max
@@ -45,6 +49,16 @@ module Paraknife
             else
               abort "Invalid value for `--thread` option: #{v}"
             end
+          end
+
+          op.on_tail("-h", "--help") do
+            puts op.help
+            exit
+          end
+
+          op.on_tail("-v", "--version") do
+            puts "#{op.program_name} #{op.version}"
+            exit
           end
         end.order!
 
