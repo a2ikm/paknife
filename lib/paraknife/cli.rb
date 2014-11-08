@@ -1,4 +1,5 @@
 require "optparse"
+require "parallel"
 
 module Paraknife
   class Cli
@@ -19,6 +20,16 @@ module Paraknife
         puts "\t#{node}"
       end
       puts "knife options: #{@knife_options.join(" ")}"
+
+      Parallel.each(@nodes, in_threads: @nodes.count) do |node|
+        command = ["knife", @backend, "prepare", node, @knife_options, "2>&1"].flatten.compact.join(" ")
+        puts "[#{node}] #{command}"
+        IO.popen(command) do |io|
+          io.each do |line|
+            puts "[#{node}] #{line}"
+          end
+        end
+      end
     end
 
     private
