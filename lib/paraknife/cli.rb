@@ -1,4 +1,3 @@
-require "open3"
 require "optparse"
 require "parallel"
 require "paraknife/context"
@@ -12,34 +11,15 @@ module Paraknife
       new(argv).run
     end
 
+    attr_reader :contexts
+
     def initialize(argv)
-      @contexts = parse_argv(argv)
+      parse_argv(argv)
     end
 
     def run
-      Parallel.each(@contexts, in_threads: @contexts.count) do |context|
-        node = context.node
-        command = context.command
-        puts "[#{node}] #{command}"
-        Open3.popen3(command) do |stdin, stdout, stderr, wait_thr|
-          begin
-            loop do
-              IO.select([stdout, stderr]).flatten.compact.each do |io|
-                io.each do |line|
-                  next if line.nil? || line.empty?
-
-                  if io == stdout
-                    puts "[#{node}] #{line}"
-                  elsif io == stderr
-                    puts "[#{node}] Error! #{line}"
-                  end
-                end
-              end
-              break if stdout.closed? && stderr.closed?
-            end
-          rescue EOFError
-          end
-        end
+      Parallel.each(contexts, in_threads: contexts.count) do |context|
+        context.run
       end
     end
 
@@ -65,7 +45,7 @@ module Paraknife
           end
         end
 
-        nodes.map do |node|
+        @contexts = nodes.map do |node|
           Context.new(backend, subcommand, node, knife_options)
         end
       end
