@@ -122,11 +122,11 @@ USAGE
       end
 
       def determine_knife
-        @options[:knife] || ENV["PARAKNIFE_KNIFE"] || DEFAULT_KNIFE
+        @options[:knife] || ENV["PAKNIFE_KNIFE"] || DEFAULT_KNIFE
       end
 
       def determine_threads
-        threads = @options[:threads] || ENV["PARAKNIFE_THREADS"] || DEFAULT_THREADS
+        threads = @options[:threads] || ENV["PAKNIFE_THREADS"] || DEFAULT_THREADS
 
         if threads.to_s.downcase == "max"
           @contexts.count

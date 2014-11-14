@@ -54,9 +54,9 @@ or
 
 where `max` means "the number of nodes".
 
-This feature is also available with `PARAKNIFE_THREADS` environment variable like:
+This feature is also available with `PAKNIFE_THREADS` environment variable like:
 
-    $ export PARAKNIFE_THREADS=max
+    $ export PAKNIFE_THREADS=max
     $ paknife solo cook node1 node2 node3 node4
 
 ### Knife command
@@ -65,9 +65,9 @@ You can specify knife command with `--knife VALUE` and `-k VALUE` options like:
 
     $ paknife --knife="/path/to/your/knife" solo cook node1 node2
 
-This feature is also available with `PARAKNIFE_KNIFE` environment variable like:
+This feature is also available with `PAKNIFE_KNIFE` environment variable like:
 
-    $ export PARAKNIFE_KNIFE=/path/to/your/knife
+    $ export PAKNIFE_KNIFE=/path/to/your/knife
     $ paknife solo cook node1 node2
 
 ## Contributing
