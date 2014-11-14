@@ -4,4 +4,4 @@ gem "chef"
 gem "berkshelf"
 gem "knife-solo"
 
-gem "paraknife", path: ".."
+gem "paknife", path: ".."

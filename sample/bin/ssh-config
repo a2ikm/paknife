@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-prefix=${1:-paraknife}
+prefix=${1:-paknife}
 
 vagrant ssh-config s1 --host ${prefix}-s1
 vagrant ssh-config s2 --host ${prefix}-s2

@@ -1,8 +1,8 @@
 require "optparse"
 require "parallel"
-require "paraknife/context"
+require "paknife/context"
 
-module Paraknife
+module Paknife
   class Cli
     BACKENDS = %w(solo zero)
     SUBCOMMANDS = %w(bootstrap clean cook prepare)

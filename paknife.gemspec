@@ -1,16 +1,16 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'paraknife/version'
+require 'paknife/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "paraknife"
-  spec.version       = Paraknife::VERSION
+  spec.name          = "paknife"
+  spec.version       = Paknife::VERSION
   spec.authors       = ["Masato Ikeda"]
   spec.email         = ["masato.ikeda@gmail.com"]
   spec.summary       = %q{Run knife-solo in parallel}
   spec.description   = %q{Run knife-solo in parallel}
-  spec.homepage      = "https://github.com/a2ikm/paraknife"
+  spec.homepage      = "https://github.com/a2ikm/paknife"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")

@@ -1,4 +1,4 @@
-#compdef paraknife
+#compdef paknife
 
 _knife() {
   local curcontext="$curcontext" state line

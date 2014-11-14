@@ -2,7 +2,7 @@ require "logger"
 require "open3"
 require "term/ansicolor"
 
-module Paraknife
+module Paknife
   class Context
     attr_reader :logger, :index, :backend, :subcommand, :node, :knife_options
 

@@ -1,4 +1,4 @@
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies in paraknife.gemspec
+# Specify your gem's dependencies in paknife.gemspec
 gemspec
