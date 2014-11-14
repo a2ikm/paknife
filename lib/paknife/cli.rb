@@ -43,7 +43,16 @@ module Paknife
         opts = {}
 
         OptionParser.new do |op|
-          op.banner = "Usage: #{op.program_name} [<options>] <backend> <subcommand> <nodes> [<knife_options>]"
+          op.banner = <<-USAGE
+Usage:
+  #{op.program_name} [<options>] <backend> <subcommand> <nodes> [<knife_options>]
+
+Backend:
+  solo : run knife-solo
+  zero : run knffe-zero (Not well tested)
+
+Options:
+USAGE
           op.version = VERSION
 
           op.on("-k", "--knife VALUE") do |v|
