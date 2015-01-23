@@ -1,5 +1,5 @@
 require "logger"
-require "open3"
+require "pty"
 require "term/ansicolor"
 
 module Paknife
@@ -19,25 +19,18 @@ module Paknife
 
     def run
       logger.info command
-      Open3.popen3(command) do |stdin, stdout, stderr, wait_thr|
-        stdin.close_write
+      PTY.spawn(command) do |r, w, pid|
+        w.close_write
+        r.sync = true
 
         begin
-          loop do
-            IO.select([stdout, stderr]).flatten.compact.each do |io|
-              io.each do |line|
-                next if line.nil? || line.empty?
-
-                if io == stdout
-                  logger.info line
-                elsif io == stderr
-                  logger.warn line
-                end
-              end
-            end
-            break if stdout.eof? && stderr.eof?
+          r.each do |line|
+            next if line.nil? || line.empty?
+            logger.info line
           end
-        rescue EOFError
+        rescue Errno::EIO
+        ensure
+          ::Process.wait pid
         end
       end
     end
